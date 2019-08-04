@@ -1,6 +1,5 @@
 const express = require('express');
 const router = express.Router();
-const gravatar = require('gravatar');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const passport = require('passport');
@@ -31,15 +30,9 @@ router.post('/register', (req, res) => {
         errors.email = 'Email already exists';
         return res.status(400).json(errors);
       } else {
-        const avatar = gravatar.url(email, {
-          s: 200, // Size
-          r: 'pg', // Rating
-          d: 'mm', //Default
-        })
         const newUser = new User({
           name,
           email,
-          avatar,
           password,
         });
 
@@ -74,8 +67,8 @@ router.post('/login', (req, res) => {
       bcrypt.compare(password, user.password)
         .then(isMatch => {
           if (isMatch) {
-            const { id, name, avatar } = user;
-            const payload = { id, name, avatar };
+            const { id, name } = user;
+            const payload = { id, name };
 
             jwt.sign(
               payload,
