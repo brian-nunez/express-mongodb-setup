@@ -5,11 +5,11 @@ const passport = require('passport');
 
 const Profile = require('../../models/Profile');
 const User = require('../../models/User');
-const keys = require('../../config/keys');
 const removeEmptyValues = require('../../utils/removeEmptyValues');
+const auth = require('../../middleware/auth');
 
 // Private Route
-router.get('/', passport.authenticate('jwt', { session: false }), (req, res) => {
+router.get('/', auth, (req, res) => {
   const { user } = req;
   const errors = {};
 
@@ -23,3 +23,5 @@ router.get('/', passport.authenticate('jwt', { session: false }), (req, res) => 
     })
     .catch(err => res.status(404).json(err));
 });
+
+module.exports = router;

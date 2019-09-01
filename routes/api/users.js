@@ -4,10 +4,10 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const passport = require('passport');
 
-const keys = require('../../config/keys');
-
 // User model
 const User = require('../../models/User');
+
+const auth = require('../../middleware/auth');
 
 // Test Route
 router.get('/test', (req, res) => res.json({ msg: 'User works' }));
@@ -72,7 +72,7 @@ router.post('/login', (req, res) => {
 
             jwt.sign(
               payload,
-              keys.secretOrKey,
+              config.get('jwtSecret'),
               { expiresIn: 3600 },
               (err, token) => {
                 res.json({
@@ -89,7 +89,7 @@ router.post('/login', (req, res) => {
     })
 });
 
-router.get('/current', passport.authenticate('jwt', { session: false }), (req, res) => {
+router.get('/current', auth, (req, res) => {
   const {
     user: {
       id,
